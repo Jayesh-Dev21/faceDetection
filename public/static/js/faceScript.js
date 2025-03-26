@@ -6,7 +6,7 @@ async function setupCamera() {
 }
 
 async function loadModels() {
-    await faceapi.nets.tinyFaceDetector.loadFromUri("./../models");
+    await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
     console.log("Model Loaded!");
 }
 
@@ -24,18 +24,29 @@ async function startFaceDetection() {
     window.addEventListener("resize", resizeCanvas);
 
     async function detect() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Flip video horizontally
+        ctx.save();
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+
+        // Detect faces
         const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions());
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.strokeStyle = "red";
         ctx.lineWidth = 3;
 
         detections.forEach(({ box }) => {
+            console.log("Face detected:", box);
             ctx.strokeRect(box.x, box.y, box.width, box.height);
         });
 
         requestAnimationFrame(detect);
     }
+
     detect();
 }
 
