@@ -6,7 +6,7 @@ async function setupCamera() {
 }
 
 async function loadModels() {
-    await faceapi.nets.tinyFaceDetector.loadFromUri(window.location.pathname + "models");
+    await faceapi.nets.tinyFaceDetector.loadFromUri("./faceDetection/models");
     console.log("Model Loaded!");
 }
 
