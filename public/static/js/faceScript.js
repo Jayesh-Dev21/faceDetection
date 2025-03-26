@@ -6,7 +6,7 @@ async function setupCamera() {
 }
 
 async function loadModels() {
-    await faceapi.nets.tinyFaceDetector.loadFromUri("./../models");
+    await faceapi.nets.tinyFaceDetector.loadFromUri("../../models");
     console.log("Model Loaded!");
 }
 
@@ -24,6 +24,8 @@ async function startFaceDetection() {
     window.addEventListener("resize", resizeCanvas);
 
     async function detect() {
+        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions());
+        // Clear the canvas first
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Flip video horizontally
@@ -34,14 +36,15 @@ async function startFaceDetection() {
         ctx.restore();
 
         // Detect faces
-        const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions());
 
         ctx.strokeStyle = "red";
         ctx.lineWidth = 3;
 
         detections.forEach(({ box }) => {
             console.log("Face detected:", box);
-            ctx.strokeRect(box.x, box.y, box.width, box.height);
+            // Adjust box x-coordinate since the video is mirrored
+            const flippedX = canvas.width - (box.x + box.width);
+            ctx.strokeRect(flippedX, box.y, box.width, box.height);
         });
 
         requestAnimationFrame(detect);
