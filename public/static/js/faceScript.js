@@ -1,11 +1,9 @@
-document.addEventListener("DOMContentLoaded",async function(){
-
-    async function setupCamera() {
-        const video = document.getElementById("video");
-        const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
-        video.srcObject = stream;
-        return new Promise(resolve => video.onloadedmetadata = resolve);
-    }
+async function setupCamera() {
+    const video = document.getElementById("video");
+    const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+    video.srcObject = stream;
+    return new Promise(resolve => video.onloadedmetadata = resolve);
+}
 
 async function loadModels() {
     await faceapi.nets.tinyFaceDetector.loadFromUri("../../models");
@@ -56,4 +54,3 @@ async function startFaceDetection() {
 }
 
 setupCamera().then(loadModels).then(startFaceDetection);
-})
